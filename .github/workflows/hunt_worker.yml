@@ -1,0 +1,43 @@
+name: hunt-worker
+on:
+  push:
+    branches: [main]
+    paths: [hunt_v4.py]      # only re-deploy if scanner changes
+  workflow_dispatch:
+    inputs:
+      brain_url:
+        description: "Brain URL"
+        required: false
+        default: ""
+      workers:
+        required: false
+        default: "600"
+      budget:
+        required: false
+        default: "300000"
+  schedule:
+    - cron: "0 */5 * * *"
+
+jobs:
+  worker:
+    name: hunt-worker-${{ matrix.shard }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Run scanner
+        env:
+          BRAIN_URL: ${{ inputs.brain_url || vars.BRAIN_URL || 'https://elliotbadinger-api-router.hf.space' }}
+          WORKERS:   ${{ inputs.workers || '600' }}
+          BUDGET:    ${{ inputs.budget || '300000' }}
+          WORKER_ID: "gh-${{ github.run_id }}-s${{ matrix.shard }}"
+        run: |
+          echo "Brain=$BRAIN_URL workers=$WORKERS budget=$BUDGET"
+          python3 hunt_v4.py --brain "$BRAIN_URL" --workers "$WORKERS" --budget "$BUDGET"

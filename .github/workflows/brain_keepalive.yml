@@ -1,0 +1,14 @@
+name: brain-keepalive
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # every 5 min, prevents HF Space sleep
+  workflow_dispatch:
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Ping brain health
+        run: |
+          STATUS=$(curl -sf "${{ vars.BRAIN_URL }}/health" || echo '{"ok":false}')
+          echo "Brain: $STATUS"

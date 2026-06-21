@@ -1,0 +1,10 @@
+name: minimal
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+jobs:
+  t:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "runner works"

@@ -8,12 +8,12 @@ on:
         default: ""
       workers:
         required: false
-        default: "600"
+        default: "800"
       budget:
         required: false
-        default: "300000"
+        default: "30000"
   schedule:
-    - cron: "0 */5 * * *"
+    - cron: "0 */4 * * *"
 
 jobs:
   worker:
@@ -23,7 +23,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2, 3]
+        shard: [1, 2, 3, 4, 5]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

@@ -1,8 +1,5 @@
 name: hunt-worker
 on:
-  push:
-    branches: [main]
-    paths: [hunt_v4.py]      # only re-deploy if scanner changes
   workflow_dispatch:
     inputs:
       brain_url:
